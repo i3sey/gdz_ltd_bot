@@ -8,8 +8,6 @@ from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButt
 import asyncio
 from config import siteReq
 import io
-import json 
-import base64
 #################################################################################################################################
 
 ######################################################################
