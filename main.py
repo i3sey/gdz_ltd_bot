@@ -82,18 +82,18 @@ async def get_message(message):
         if step == 1:
             try:
                 lesson = int(message.text)
-                await bot.send_message(message.chat.id, text = "Введи *номер упражнения*", parse_mode='Markdown')
             except ValueError:
-                bot.send_message(message.chat.id, text = "*Цифрами*, пожалуйста", parse_mode='Markdown')
+                await bot.send_message(message.chat.id, text = "*Цифрами*, пожалуйста", parse_mode='Markdown')
             else:
+                await bot.send_message(message.chat.id, text = "Введи *номер упражнения*", parse_mode='Markdown')
                 step = 2
         elif step == 2:
             try:
                 number = int(message.text)
             except ValueError:
-                 bot.send_message(message.chat.id, text = "*Цифрами*, пожалуйста", parse_mode='Markdown')
+                await bot.send_message(message.chat.id, text = "*Цифрами*, пожалуйста", parse_mode='Markdown')
             else:
-                step == 0
+                step = 0
                 await bot.send_message(message.chat.id, text = "Отправляю...", parse_mode='Markdown')
                 data = siteReq(lesson, number)
                 try:
