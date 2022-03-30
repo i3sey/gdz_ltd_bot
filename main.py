@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 ################################################################################################################################
+from multiprocessing import cpu_count
 from aiogram import Bot, types
 from aiogram.utils import executor
 from aiogram.dispatcher import Dispatcher
@@ -7,7 +8,8 @@ from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButt
 import asyncio
 from config import siteReq
 import io
-import os
+import json 
+import base64
 #################################################################################################################################
 
 ######################################################################
@@ -30,6 +32,7 @@ dp = Dispatcher(bot, storage=storage)
 lesson = 0 
 number = 0
 step = 0
+currect = ' '
 
 logging.basicConfig(format=u'%(filename)s [LINE:%(lineno)d] #%(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,)
 
@@ -71,11 +74,12 @@ async def get_message(message):
     global lesson
     global number
     global step
+    global currect
     if message.text == "Информация":
         await bot.send_message(message.chat.id, text = "*Информация:*\nБота сделал @i3sey", parse_mode='Markdown')
-    if message.text == "Статистика":
+    elif message.text == "Статистика":
         await bot.send_message(message.chat.id, text = "Хочешь просмотреть статистику бота?", reply_markup=keyboard.stats, parse_mode='Markdown')
-    if message.text == "Получить гдз":
+    elif message.text == "Получить гдз":
         await bot.send_message(message.chat.id, text = "Введи *номер урока*", parse_mode='Markdown')
         step = 1
     else:
@@ -97,17 +101,36 @@ async def get_message(message):
                 await bot.send_message(message.chat.id, text = "Отправляю...", parse_mode='Markdown')
                 data = siteReq(lesson, number)
                 try:
-                    await bot.send_photo(message.chat.id, data.content)
+                    await bot.send_photo(message.chat.id, data.content, reply_markup=keyboard.arrows)
+                    currect = message.chat.id
                 except Exception:
                     file_obj = io.BytesIO(data.content)
                     file_obj.name = str(number) + ".jpg"
                     await bot.send_document(message.chat.id, file_obj)
 
-       
+@dp.callback_query_handler(text_contains='prev')
+async def prev(call: types.CallbackQuery):
+    global lesson
+    global number
+    global currect
+    number = number - 1
+    data = siteReq(lesson, number)
+    file_obj = io.BytesIO(data.content)
+    await bot.edit_message_media(types.InputMediaPhoto(file_obj),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
 
+@dp.callback_query_handler(text_contains='next')
+async def next(call: types.CallbackQuery):
+    global lesson
+    global number
+    global currect
+    number = number + 1
+    data = siteReq(lesson, number)
+    file_obj = io.BytesIO(data.content)
+    await bot.edit_message_media(types.InputMediaPhoto(file_obj),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
 
-    
-
+@dp.callback_query_handler(text_contains='delt')
+async def delt(call: types.CallbackQuery):
+    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
 
 @dp.callback_query_handler(text_contains='join') # МЫ ПРОПИСЫВАЛИ В КНОПКАХ КАЛЛБЭК "JOIN" ЗНАЧИТ И ТУТ МЫ ЛОВИМ "JOIN"
 async def join(call: types.CallbackQuery):
