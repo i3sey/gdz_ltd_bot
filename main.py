@@ -11,10 +11,10 @@ import os
 #################################################################################################################################
 
 ######################################################################
-from aiogram.dispatcher import FSMContext                            ## ТО, ЧЕГО ВЫ ЖДАЛИ - FSM
-from aiogram.dispatcher.filters import Command                        ## ТО, ЧЕГО ВЫ ЖДАЛИ - FSM
-from aiogram.contrib.fsm_storage.memory import MemoryStorage        ## ТО, ЧЕГО ВЫ ЖДАЛИ - FSM
-from aiogram.dispatcher.filters.state import StatesGroup, State        ## ТО, ЧЕГО ВЫ ЖДАЛИ - FSM
+from aiogram.dispatcher import FSMContext                            
+from aiogram.dispatcher.filters import Command                        
+from aiogram.contrib.fsm_storage.memory import MemoryStorage        
+from aiogram.dispatcher.filters.state import StatesGroup, State        
 ######################################################################
 
 ######################
@@ -126,6 +126,6 @@ async def cancle(call: types.CallbackQuery):
 
 ##############################################################
 if __name__ == '__main__':
-    print('Ура, победа!')                                    # ЧТОБЫ БОТ РАБОТАЛ ВСЕГДА с выводом в начале вашего любого текста
+    print('Ура, победа!')                                    
 executor.start_polling(dp)
 ##############################################################
