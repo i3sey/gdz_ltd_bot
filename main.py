@@ -60,7 +60,7 @@ async def rassilka(message):
     joinedFile.close()
     for user in jionedUsers:
         try:
-            await bot.send_photo(user, open('lzt.jpg', 'rb'), message.text[message.text.find(' '):])
+            await bot.send_photo(user, open('banner.jpg', 'rb'), message.text[message.text.find(' '):])
             receive_users += 1
         except:
             block_users += 1
@@ -100,31 +100,38 @@ async def get_message(message):
                 data = siteReq(lesson, number)
                 try:
                     await bot.send_photo(message.chat.id, data.content, reply_markup=keyboard.arrows)
-                    currect = message.chat.id
                 except Exception:
                     file_obj = io.BytesIO(data.content)
                     file_obj.name = str(number) + ".jpg"
-                    await bot.send_document(message.chat.id, file_obj)
+                    await bot.send_document(message.chat.id, file_obj, reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='prev')
 async def prev(call: types.CallbackQuery):
     global lesson
     global number
-    global currect
     number = number - 1
     data = siteReq(lesson, number)
-    file_obj = io.BytesIO(data.content)
-    await bot.edit_message_media(types.InputMediaPhoto(file_obj),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+    file_obj1 = io.BytesIO(data.content)
+    try:
+        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+    except Exception:
+        file_obj1 = io.BytesIO(data.content)
+        file_obj1.name = str(number) + ".jpg"
+        await bot.edit_message_media(types.InputMediaDocument(file_obj1), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='next')
 async def next(call: types.CallbackQuery):
     global lesson
     global number
-    global currect
     number = number + 1
     data = siteReq(lesson, number)
-    file_obj = io.BytesIO(data.content)
-    await bot.edit_message_media(types.InputMediaPhoto(file_obj),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+    file_obj1 = io.BytesIO(data.content)
+    try:
+        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+    except Exception:
+        file_obj1 = io.BytesIO(data.content)
+        file_obj1.name = str(number) + ".jpg"
+        await bot.edit_message_media(types.InputMediaDocument(file_obj1), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='delt')
 async def delt(call: types.CallbackQuery):
