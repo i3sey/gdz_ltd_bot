@@ -30,7 +30,6 @@ dp = Dispatcher(bot, storage=storage)
 lesson = 0 
 number = 0
 step = 0
-currect = ' '
 
 logging.basicConfig(format=u'%(filename)s [LINE:%(lineno)d] #%(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,)
 
@@ -72,7 +71,6 @@ async def get_message(message):
     global lesson
     global number
     global step
-    global currect
     if message.text == "Информация":
         await bot.send_photo(message.chat.id, photo=open('banner.jpg', 'rb'), caption="*Информация:*\nБот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях", parse_mode='Markdown')
     elif message.text == "/stats":
