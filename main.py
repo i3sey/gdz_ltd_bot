@@ -60,7 +60,7 @@ async def rassilka(message):
     joinedFile.close()
     for user in jionedUsers:
         try:
-            await bot.send_photo(user, open('banner.jpg', 'rb'), message.text[message.text.find(' '):])
+            await bot.send_photo(user, open('update.png', 'rb'), message.text[message.text.find(' '):])
             receive_users += 1
         except:
             block_users += 1
@@ -74,12 +74,14 @@ async def get_message(message):
     global step
     global currect
     if message.text == "Информация":
-        await bot.send_message(message.chat.id, text = "*Информация:*\nБота сделал @i3sey", parse_mode='Markdown')
-    elif message.text == "Статистика":
+        await bot.send_photo(message.chat.id, photo=open('banner.jpg', 'rb'), caption="*Информация:*\nБот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях", parse_mode='Markdown')
+    elif message.text == "/stats":
         await bot.send_message(message.chat.id, text = "Хочешь просмотреть статистику бота?", reply_markup=keyboard.stats, parse_mode='Markdown')
     elif message.text == "Получить гдз":
         await bot.send_message(message.chat.id, text = "Введи *номер урока*", parse_mode='Markdown')
         step = 1
+    elif message.text == "Создатель":
+        await bot.send_message(message.chat.id, text = "Бота разрабатывает @3sey. Жду жалоб и предложений **<3.**", parse_mode='Markdown')
     else:
         if step == 1:
             try:
