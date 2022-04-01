@@ -79,7 +79,7 @@ async def get_message(message):
         await bot.send_message(message.chat.id, text = "Введи *номер урока*", parse_mode='Markdown')
         step = 1
     elif message.text == "Создатель":
-        await bot.send_message(message.chat.id, text = "Бота разрабатывает @3sey. Жду жалоб и предложений **<3.**", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, text = "Бота разрабатывает @i3sey. Жду жалоб и предложений **<3.**", parse_mode='Markdown')
     else:
         if step == 1:
             try:
