@@ -78,7 +78,7 @@ async def get_message(message):
     #начинаем прогонять входящее сообщение через 7 кругов ада:
     #Если вы знаете как это упростить то сделайте коммит пж, я тупой
     if message.text == "Информация": #Если чел тыкнул по кнопке с инфой то мы ему шлем картинку с подписью 
-        await bot.send_photo(message.chat.id, photo=open('banner.jpg', 'rb'), caption="*Информация:*\nБот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях", parse_mode='Markdown')
+        await bot.send_photo(message.chat.id, photo=open('banner.jpg', 'rb'), caption="*Информация:*\nБот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях\nТут исходный код: https://github.com/i3sey/gdz_ltd_bot", parse_mode='Markdown')
     elif message.text == "/stats": #Если админ написал о стате, то переспрашиваем его через инлайн кнопочки
         await bot.send_message(message.chat.id, text = "Хочешь просмотреть статистику бота?", reply_markup=keyboard.stats, parse_mode='Markdown')
     elif message.text == "Получить гдз": #если чел неужели решил заюзать основной функционал бота, то идём дальше
