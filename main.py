@@ -105,7 +105,7 @@ async def get_message(message):
                     file_obj.name = str(number) + ".jpg"
                     await bot.send_document(message.chat.id, file_obj, reply_markup=keyboard.arrows)
 
-@dp.callback_query_handler(text_contains='prev')
+@dp.callback_query_handler(text_contains='Предыдущиий номер')
 async def prev(call: types.CallbackQuery):
     global lesson
     global number
@@ -119,7 +119,35 @@ async def prev(call: types.CallbackQuery):
         file_obj1.name = str(number) + ".jpg"
         await bot.edit_message_media(types.InputMediaDocument(file_obj1), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
 
-@dp.callback_query_handler(text_contains='next')
+@dp.callback_query_handler(text_contains='Предыдущии урок')
+async def prev_lesson(call: types.CallbackQuery):
+    global lesson
+    global number
+    lesson = lesson - 1
+    data = siteReq(lesson, number)
+    file_obj1 = io.BytesIO(data.content)
+    try:
+        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+    except Exception:
+        file_obj1 = io.BytesIO(data.content)
+        file_obj1.name = str(number) + ".jpg"
+        await bot.edit_message_media(types.InputMediaDocument(file_obj1), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+
+@dp.callback_query_handler(text_contains='Следующий урок')
+async def next_lesson(call: types.CallbackQuery):
+    global lesson
+    global number
+    lesson = lesson + 1
+    data = siteReq(lesson, number)
+    file_obj1 = io.BytesIO(data.content)
+    try:
+        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+    except Exception:
+        file_obj1 = io.BytesIO(data.content)
+        file_obj1.name = str(number) + ".jpg"
+        await bot.edit_message_media(types.InputMediaDocument(file_obj1), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
+
+@dp.callback_query_handler(text_contains='Следующий номер')
 async def next(call: types.CallbackQuery):
     global lesson
     global number
@@ -133,11 +161,11 @@ async def next(call: types.CallbackQuery):
         file_obj1.name = str(number) + ".jpg"
         await bot.edit_message_media(types.InputMediaDocument(file_obj1), chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard.arrows)
 
-@dp.callback_query_handler(text_contains='delt')
+@dp.callback_query_handler(text_contains='Удалить')
 async def delt(call: types.CallbackQuery):
     await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
 
-@dp.callback_query_handler(text_contains='join') # МЫ ПРОПИСЫВАЛИ В КНОПКАХ КАЛЛБЭК "JOIN" ЗНАЧИТ И ТУТ МЫ ЛОВИМ "JOIN"
+@dp.callback_query_handler(text_contains='Да') # МЫ ПРОПИСЫВАЛИ В КНОПКАХ КАЛЛБЭК "JOIN" ЗНАЧИТ И ТУТ МЫ ЛОВИМ "JOIN"
 async def join(call: types.CallbackQuery):
     if call.message.chat.id == config.admin:
         d = sum(1 for line in open('user.txt'))
@@ -147,7 +175,7 @@ async def join(call: types.CallbackQuery):
 
 
 
-@dp.callback_query_handler(text_contains='cancle') # МЫ ПРОПИСЫВАЛИ В КНОПКАХ КАЛЛБЭК "cancle" ЗНАЧИТ И ТУТ МЫ ЛОВИМ "cancle"
+@dp.callback_query_handler(text_contains='Нет') # МЫ ПРОПИСЫВАЛИ В КНОПКАХ КАЛЛБЭК "cancle" ЗНАЧИТ И ТУТ МЫ ЛОВИМ "cancle"
 async def cancle(call: types.CallbackQuery):
     await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text= "Ты вернулся В главное меню.", parse_mode='Markdown')
 

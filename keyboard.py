@@ -13,12 +13,16 @@ start.add(let)
 start.add(info, stats) #ДОБАВЛЯЕМ ИХ В БОТА
 
 stats = InlineKeyboardMarkup()    # СОЗДАЁМ ОСНОВУ ДЛЯ ИНЛАЙН КНОПКИ
-stats.add(InlineKeyboardButton(f'Да', callback_data = 'join')) # СОЗДАЁМ КНОПКУ И КАЛБЭК К НЕЙ
-stats.add(InlineKeyboardButton(f'Нет', callback_data = 'cancle')) # СОЗДАЁМ КНОПКУ И КАЛБЭК К НЕЙ
+stats.add(InlineKeyboardButton(f'Да', callback_data = 'Да')) # СОЗДАЁМ КНОПКУ И КАЛБЭК К НЕЙ
+stats.add(InlineKeyboardButton(f'Нет', callback_data = 'Нет')) # СОЗДАЁМ КНОПКУ И КАЛБЭК К НЕЙ
 
 arrows = InlineKeyboardMarkup() #сделал листалку
 arrows.add(
-    InlineKeyboardButton(f'⬅️', callback_data = 'prev'),
-    InlineKeyboardButton(f'❌', callback_data = 'delt'),
-    InlineKeyboardButton(f'➡️', callback_data = 'next')
+    InlineKeyboardButton(f'⬅️', callback_data = 'Предыдущиий номер'),
+    InlineKeyboardButton(f'❌', callback_data = 'Удалить'),
+    InlineKeyboardButton(f'➡️', callback_data = 'Следующий номер')
     )
+arrows.add(
+    InlineKeyboardButton(f'⬅️', callback_data = 'Предыдущии урок'),
+    InlineKeyboardButton(f'➡️', callback_data = 'Следующий урок')
+)
