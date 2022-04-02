@@ -4,3 +4,5 @@ __pycache__/
 config.py
 # Тут некий аналог бд
 user.txt
+.vscode/
+
