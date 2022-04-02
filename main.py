@@ -10,6 +10,7 @@ import io
 
 ######################################################################                         
 from aiogram.dispatcher.filters import Command                        
+from aiogram.utils.exceptions import PhotoDimensions
 from aiogram.contrib.fsm_storage.memory import MemoryStorage              
 ######################################################################
 
@@ -29,18 +30,18 @@ number = 0
 step = 0
 
 #Логи
-logging.basicConfig(format=u'%(filename)s [LINE:%(lineno)d] #%(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,)
+logging.basicConfig(format='%(filename)s [LINE:%(lineno)d] #%(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,)
 
 #Первый хендлер-команда старт
 @dp.message_handler(Command("start"), state=None)
 async def welcome(message): 
-    joinedFile = open("user.txt","r") #Чекаем, есть ли чел в бд и если нет, то добавляем
+    joinedFile = open("user.txt","r", encoding="utf8") #Чекаем, есть ли чел в бд и если нет, то добавляем
     joinedUsers = set ()
     for line in joinedFile:
         joinedUsers.add(line.strip())
 
     if not str(message.chat.id) in joinedUsers:
-        joinedFile = open("user.txt","a")
+        joinedFile = open("user.txt","a", encoding="utf8")
         joinedFile.write(str(message.chat.id)+ "\n")
         joinedUsers.add(message.chat.id)
 #Здороваемся
@@ -50,9 +51,9 @@ async def welcome(message):
 @dp.message_handler(commands=['asa'])
 async def rassilka(message):
     if message.chat.id == config.admin:
-        await bot.send_message(message.chat.id, f"*Рассылка началась \nБот оповестит когда рассылку закончит*", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, "*Рассылка началась \nБот оповестит когда рассылку закончит*", parse_mode='Markdown')
         receive_users, block_users = 0, 0
-        joinedFile = open ("user.txt", "r")
+        joinedFile = open ("user.txt", "r", encoding="utf8")
         jionedUsers = set ()
         for line in joinedFile:
             jionedUsers.add(line.strip())
@@ -61,12 +62,12 @@ async def rassilka(message):
             try:
                 await bot.send_photo(user, open('update.png', 'rb'), message.text[message.text.find(' '):])
                 receive_users += 1
-            except:
+            except Exception:
                 block_users += 1
             await asyncio.sleep(0.4)
         await bot.send_message(message.chat.id, f"*Рассылка была завершена *\n"f"получили сообщение: *{receive_users}*\n"f"заблокировали бота: *{block_users}*", parse_mode='Markdown')
     else:
-        await bot.send_message(message.chat.id, f"Думаешь почитал код и такой умный, **а нет**, я проверку на админку поставил, ха", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, "Думаешь почитал код и такой умный, **а нет**, я проверку на админку поставил, ха", parse_mode='Markdown')
 
 #тут капец гениальное решение......
 #ВОТ ТУТ НАДО УМНОГО ЧЕЛА
@@ -107,7 +108,7 @@ async def get_message(message):
                 try:
                     await bot.send_photo(message.chat.id, data.content, reply_markup=keyboard.arrows) #Пробуем отправить её как фото
                     #Это не всегда получается, ибо некоторые пикчи большие по размеру (в px, а не МБ) и там не работает
-                except Exception:  # Знаю, что так нельзя, но я не могу найти название исключения - ВОТ ТУТ НАДО УМНОГО ЧЕЛА
+                except PhotoDimensions: # Знаю, что так нельзя, но я не могу найти название исключения - ВОТ ТУТ НАДО УМНОГО ЧЕЛА
                     file_obj = io.BytesIO(data.content)
                     file_obj.name = f"{number}.jpg" #Делаем название файлу чтобы был не document, а 1.jpg культурный
                     await bot.send_document(message.chat.id, file_obj, reply_markup=keyboard.arrows) #Отправляем как док
@@ -129,7 +130,7 @@ async def prev(call: types.CallbackQuery):
         chat_id=call.message.chat.id, 
         message_id=call.message.message_id, 
         reply_markup=keyboard.arrows)
-    except Exception:
+    except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
         await bot.edit_message_media(types.InputMediaDocument(file_obj1),
@@ -148,7 +149,7 @@ async def prev_lesson(call: types.CallbackQuery):
         chat_id=call.message.chat.id, 
         message_id=call.message.message_id,
         reply_markup=keyboard.arrows)
-    except Exception:
+    except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
         await bot.edit_message_media(types.InputMediaDocument(file_obj1),
@@ -167,7 +168,7 @@ async def next_lesson(call: types.CallbackQuery):
         chat_id=call.message.chat.id,
         message_id=call.message.message_id,
         reply_markup=keyboard.arrows)
-    except Exception:
+    except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
         await bot.edit_message_media(types.InputMediaDocument(file_obj1),
@@ -175,7 +176,7 @@ async def next_lesson(call: types.CallbackQuery):
         reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Следующий номер')
-async def next(call: types.CallbackQuery):
+async def nextNumber(call: types.CallbackQuery):
     global lesson
     global number
     number = number + 1
@@ -185,7 +186,7 @@ async def next(call: types.CallbackQuery):
         await bot.edit_message_media(types.InputMediaPhoto(file_obj1),
         chat_id=call.message.chat.id, message_id=call.message.message_id,
         reply_markup=keyboard.arrows)
-    except Exception:
+    except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
         await bot.edit_message_media(types.InputMediaDocument(file_obj1),
@@ -199,7 +200,7 @@ async def delt(call: types.CallbackQuery):
 @dp.callback_query_handler(text_contains='Да') # тут вопросик насчёт статы
 async def join(call: types.CallbackQuery):
     if call.message.chat.id == config.admin: # Ты админ?
-        d = sum(1 for line in open('user.txt'))
+        d = sum(1 for line in open('user.txt', encoding='utf8'))
         await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'*Вот статистика бота*: {d} человек', parse_mode='Markdown')
     else:
         await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text = "У тебя нет админки\n *Куда ты полез*", parse_mode='Markdown')
