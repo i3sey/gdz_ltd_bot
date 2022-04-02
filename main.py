@@ -10,7 +10,7 @@ import io
 
 ######################################################################                         
 from aiogram.dispatcher.filters import Command                        
-from aiogram.utils.exceptions import PhotoDimensions
+from aiogram.utils.exceptions import PhotoDimensions, BotBlocked
 from aiogram.contrib.fsm_storage.memory import MemoryStorage              
 ######################################################################
 
@@ -23,7 +23,8 @@ import logging # ПРОСТО ВЫВОДИТ В КОНСОЛЬ ИНФОРМАЦ�
 
 #Обьявление переменных глобальных
 storage = MemoryStorage() 
-bot = Bot(token=config.botkey, parse_mode=types.ParseMode.HTML)
+bot = Bot(token=config.botkey, 
+parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=storage)
 lesson = 0 
 number = 0
@@ -45,13 +46,18 @@ async def welcome(message):
         joinedFile.write(str(message.chat.id)+ "\n")
         joinedUsers.add(message.chat.id)
 #Здороваемся
-    await bot.send_message(message.chat.id, f"*Привет, {message.from_user.first_name}, здесь ты можешь найти гдз ко всему учебнику по английскому*", reply_markup=keyboard.start, parse_mode='Markdown')
+    await bot.send_message(
+        message.chat.id, f"*Привет, {message.from_user.first_name}, здесь ты можешь найти гдз ко всему учебнику по английскому*", 
+        reply_markup=keyboard.start, 
+        parse_mode='Markdown')
 
 #Дальше системная команда для рассылки инфы
 @dp.message_handler(commands=['asa'])
 async def rassilka(message):
     if message.chat.id == config.admin:
-        await bot.send_message(message.chat.id, "*Рассылка началась \nБот оповестит когда рассылку закончит*", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, 
+        "*Рассылка началась \nБот оповестит когда рассылку закончит*", 
+        parse_mode='Markdown')
         receive_users, block_users = 0, 0
         joinedFile = open ("user.txt", "r", encoding="utf8")
         jionedUsers = set ()
@@ -60,14 +66,20 @@ async def rassilka(message):
         joinedFile.close()
         for user in jionedUsers:
             try:
-                await bot.send_photo(user, open('update.png', 'rb'), message.text[message.text.find(' '):])
+                await bot.send_photo(user, 
+                open('update.png', 'rb'), 
+                message.text[message.text.find(' '):])
                 receive_users += 1
-            except Exception:
+            except BotBlocked:
                 block_users += 1
             await asyncio.sleep(0.4)
-        await bot.send_message(message.chat.id, f"*Рассылка была завершена *\n"f"получили сообщение: *{receive_users}*\n"f"заблокировали бота: *{block_users}*", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, 
+        f"*Рассылка была завершена *\n"f"получили сообщение: *{receive_users}*\n"f"заблокировали бота: *{block_users}*", 
+        parse_mode='Markdown')
     else:
-        await bot.send_message(message.chat.id, "Думаешь почитал код и такой умный, **а нет**, я проверку на админку поставил, ха", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, 
+        "Думаешь почитал код и такой умный, **а нет**, я проверку на админку поставил, ха", 
+        parse_mode='Markdown')
 
 #тут капец гениальное решение......
 #ВОТ ТУТ НАДО УМНОГО ЧЕЛА
@@ -79,39 +91,58 @@ async def get_message(message):
     #начинаем прогонять входящее сообщение через 7 кругов ада:
     #Если вы знаете как это упростить то сделайте коммит пж, я тупой
     if message.text == "Информация": #Если чел тыкнул по кнопке с инфой то мы ему шлем картинку с подписью 
-        await bot.send_photo(message.chat.id, photo=open('banner.jpg', 'rb'), caption="<b>Информация:</b>\nБот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях\nТут исходный код: <a href='https://github.com/i3sey/gdz_ltd_bot'>тут</a>", parse_mode='HTML')
+        await bot.send_photo(message.chat.id, 
+        photo=open('banner.jpg', 'rb'), 
+        caption="<b>Информация:</b>\nБот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях\nТут исходный код: <a href='https://github.com/i3sey/gdz_ltd_bot'>тут</a>", 
+        parse_mode='HTML')
     elif message.text == "/stats": #Если админ написал о стате, то переспрашиваем его через инлайн кнопочки
-        await bot.send_message(message.chat.id, text = "Хочешь просмотреть статистику бота?", reply_markup=keyboard.stats, parse_mode='Markdown')
+        await bot.send_message(message.chat.id, 
+        text = "Хочешь просмотреть статистику бота?", 
+        reply_markup=keyboard.stats, 
+        parse_mode='Markdown')
     elif message.text == "Получить гдз": #если чел неужели решил заюзать основной функционал бота, то идём дальше
-        await bot.send_message(message.chat.id, text = "Введи *номер урока*", parse_mode='Markdown') # просим ввести номер урока
+        await bot.send_message(message.chat.id, 
+        text = "Введи *номер урока*", 
+        parse_mode='Markdown') # просим ввести номер урока
         step = 1 #Эта переменная раскажет нам о текущем состоянии процесса
     elif message.text == "Создатель": #Тут я резко вспомнил про эту кнопку
-        await bot.send_message(message.chat.id, text = "Бота разрабатывает @i3sey. Жду жалоб и предложений **<3.**", parse_mode='Markdown')
+        await bot.send_message(message.chat.id, 
+        text = "Бота разрабатывает @i3sey. Жду жалоб и предложений **<3.**", 
+        parse_mode='Markdown')
     else:
         if step == 1: # воооооооот, если мы получили сообщение в ответ на просьбу номера УРОКА (а мы определили по степ = 1)
             try:
                 lesson = int(message.text) # Пробуем перевести строкку в цифру
             except ValueError:
-                await bot.send_message(message.chat.id, text = "*Цифрами*, пожалуйста", parse_mode='Markdown') # Если не получается то не меняя степ просим еще раз
+                await bot.send_message(message.chat.id, 
+                text = "*Цифрами*, пожалуйста", 
+                parse_mode='Markdown') # Если не получается то не меняя степ просим еще раз
             else:
-                await bot.send_message(message.chat.id, text = "Введи *номер упражнения*", parse_mode='Markdown') #Следующее - номер просим
+                await bot.send_message(message.chat.id, 
+                text = "Введи *номер упражнения*", 
+                parse_mode='Markdown') #Следующее - номер просим
                 step = 2 # второй степ
         elif step == 2: # если мы получили сообщение в ответ на просьбу номера НОМЕРА (мне лень каждый раз писать упражнения) (а мы определили по степ = 2)
             try:
                 number = int(message.text) # Опять пробуем 
             except ValueError:
-                await bot.send_message(message.chat.id, text = "*Цифрами*, пожалуйста", parse_mode='Markdown') #Опять разочаровываемся...
+                await bot.send_message(message.chat.id, 
+                text = "*Цифрами*, пожалуйста", 
+                parse_mode='Markdown') #Опять разочаровываемся...
             else:
                 step = 0 # сбрасываем степ, чтобы потом еще раз сделать
-                await bot.send_message(message.chat.id, text = "Отправляю...", parse_mode='Markdown') # Бесполезная заглушка, скоро уберу
                 data = siteReq(lesson, number) #Получаем картинку
                 try:
-                    await bot.send_photo(message.chat.id, data.content, reply_markup=keyboard.arrows) #Пробуем отправить её как фото
+                    await bot.send_photo(message.chat.id, 
+                    data.content, 
+                    reply_markup=keyboard.arrows) #Пробуем отправить её как фото
                     #Это не всегда получается, ибо некоторые пикчи большие по размеру (в px, а не МБ) и там не работает
                 except PhotoDimensions: # Знаю, что так нельзя, но я не могу найти название исключения - ВОТ ТУТ НАДО УМНОГО ЧЕЛА
                     file_obj = io.BytesIO(data.content)
                     file_obj.name = f"{number}.jpg" #Делаем название файлу чтобы был не document, а 1.jpg культурный
-                    await bot.send_document(message.chat.id, file_obj, reply_markup=keyboard.arrows) #Отправляем как док
+                    await bot.send_document(message.chat.id, 
+                    file_obj, 
+                    reply_markup=keyboard.arrows) #Отправляем как док
 
 #########################################################################################################
 # кринж кончился вроде
@@ -126,16 +157,19 @@ async def prev(call: types.CallbackQuery):
     data = siteReq(lesson, number)
     file_obj1 = io.BytesIO(data.content)
     try: #Та же самая штука. Пробуем как фото, потом как док
-        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),
-        chat_id=call.message.chat.id, 
-        message_id=call.message.message_id, 
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaPhoto(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id, 
+            reply_markup=keyboard.arrows)
     except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(types.InputMediaDocument(file_obj1),
-        chat_id=call.message.chat.id, message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaDocument(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Предыдущии урок')
 async def prev_lesson(call: types.CallbackQuery):
@@ -145,16 +179,19 @@ async def prev_lesson(call: types.CallbackQuery):
     data = siteReq(lesson, number)
     file_obj1 = io.BytesIO(data.content)
     try:
-        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),
-        chat_id=call.message.chat.id, 
-        message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaPhoto(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
     except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(types.InputMediaDocument(file_obj1),
-        chat_id=call.message.chat.id, message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaDocument(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Следующий урок')
 async def next_lesson(call: types.CallbackQuery):
@@ -164,16 +201,19 @@ async def next_lesson(call: types.CallbackQuery):
     data = siteReq(lesson, number)
     file_obj1 = io.BytesIO(data.content)
     try:
-        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaPhoto(file_obj1),
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
     except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(types.InputMediaDocument(file_obj1),
-        chat_id=call.message.chat.id, message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaDocument(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Следующий номер')
 async def nextNumber(call: types.CallbackQuery):
@@ -183,33 +223,48 @@ async def nextNumber(call: types.CallbackQuery):
     data = siteReq(lesson, number)
     file_obj1 = io.BytesIO(data.content)
     try:
-        await bot.edit_message_media(types.InputMediaPhoto(file_obj1),
-        chat_id=call.message.chat.id, message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaPhoto(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
     except PhotoDimensions:
         file_obj1 = io.BytesIO(data.content)
         file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(types.InputMediaDocument(file_obj1),
-        chat_id=call.message.chat.id, message_id=call.message.message_id,
-        reply_markup=keyboard.arrows)
+        await bot.edit_message_media(
+            types.InputMediaDocument(file_obj1),
+            chat_id=call.message.chat.id, 
+            message_id=call.message.message_id,
+            reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Удалить')
 async def delt(call: types.CallbackQuery):
-    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id) #Удаляем решение
+    await bot.delete_message(
+        chat_id=call.from_user.id, 
+        message_id=call.message.message_id) #Удаляем решение
 
 @dp.callback_query_handler(text_contains='Да') # тут вопросик насчёт статы
 async def join(call: types.CallbackQuery):
     if call.message.chat.id == config.admin: # Ты админ?
         d = sum(1 for line in open('user.txt', encoding='utf8'))
-        await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'*Вот статистика бота*: {d} человек', parse_mode='Markdown')
+        await bot.edit_message_text(chat_id=call.message.chat.id, 
+        message_id=call.message.message_id, 
+        text=f'*Вот статистика бота*: {d} человек', 
+        parse_mode='Markdown')
     else:
-        await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text = "У тебя нет админки\n *Куда ты полез*", parse_mode='Markdown')
+        await bot.edit_message_text(chat_id=call.message.chat.id, 
+        message_id=call.message.message_id, 
+        text = "У тебя нет админки\n *Куда ты полез*", 
+        parse_mode='Markdown')
 
 
 
 @dp.callback_query_handler(text_contains='Нет') # Домой, на базу
 async def cancle(call: types.CallbackQuery):
-    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text= "Ты вернулся В главное меню.", parse_mode='Markdown')
+    await bot.edit_message_text(chat_id=call.message.chat.id, 
+    message_id=call.message.message_id, 
+    text= "Ты вернулся В главное меню.", 
+    parse_mode='Markdown')
 
 
 ##############################################################
