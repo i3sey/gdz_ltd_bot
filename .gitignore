@@ -5,4 +5,4 @@ config.py
 # Тут некий аналог бд
 user.txt
 .vscode/
-
+base.txt
