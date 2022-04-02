@@ -106,7 +106,7 @@ async def get_message(message):
                 data = siteReq(lesson, number) #Получаем картинку
                 try:
                     await bot.send_photo(message.chat.id, data.content, reply_markup=keyboard.arrows) #Пробуем отправить её как фото
-                    #Это не всегда получается, ибо некоторые пикчи большие по размеру (px не МБ) и там не работает
+                    #Это не всегда получается, ибо некоторые пикчи большие по размеру (в px, а не МБ) и там не работает
                 except Exception:  # Знаю, что так нельзя, но я не могу найти название исключения - ВОТ ТУТ НАДО УМНОГО ЧЕЛА
                     file_obj = io.BytesIO(data.content)
                     file_obj.name = f"{number}.jpg" #Делаем название файлу чтобы был не document, а 1.jpg культурный
