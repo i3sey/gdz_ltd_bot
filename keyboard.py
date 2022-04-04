@@ -21,11 +21,11 @@ stats.add(InlineKeyboardButton('Нет', callback_data = 'Нет'))
 #заменить неинформативные эмодзи на цифры уроков:
 
 arrows.add(
-    InlineKeyboardButton('⬅️', callback_data = 'Предыдущиий номер'),
+    InlineKeyboardButton('⬅️ Номер', callback_data = 'Предыдущиий номер'),
     InlineKeyboardButton('❌', callback_data = 'Удалить'),
-    InlineKeyboardButton('➡️', callback_data = 'Следующий номер')
+    InlineKeyboardButton('Номер ➡️', callback_data = 'Следующий номер')
     )
 arrows.add(
-    InlineKeyboardButton('⬅️', callback_data = 'Предыдущии урок'),
-    InlineKeyboardButton('➡️', callback_data = 'Следующий урок')
+    InlineKeyboardButton('⬅️ Урок', callback_data = 'Предыдущии урок'),
+    InlineKeyboardButton('Урок ➡️', callback_data = 'Следующий урок')
 )
