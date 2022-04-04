@@ -164,21 +164,30 @@ async def prev(call: types.CallbackQuery):
     global number
     number = number - 1
     data = siteReq(lesson, number)
-    file_obj1 = io.BytesIO(data.content)
-    try: #Та же самая штука. Пробуем как фото, потом как док
-        await bot.edit_message_media(
-            types.InputMediaPhoto(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id, 
-            reply_markup=keyboard.arrows)
-    except PhotoDimensions:
+    if data != -1:
         file_obj1 = io.BytesIO(data.content)
-        file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(
-            types.InputMediaDocument(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
+        try: #Та же самая штука. Пробуем как фото, потом как док
+            await bot.edit_message_media(
+                types.InputMediaPhoto(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id, 
+                reply_markup=keyboard.arrows)
+        except PhotoDimensions:
+            file_obj1 = io.BytesIO(data.content)
+            file_obj1.name = f'{number}.jpg'
+            await bot.edit_message_media(
+                types.InputMediaDocument(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id,
+                reply_markup=keyboard.arrows)
+    else:
+        with open('no.png', 'rb') as file:
+            photo = types.InputMediaPhoto(file)
+            await bot.edit_message_media(
+                    media=photo,
+                    chat_id=call.message.chat.id, 
+                    message_id=call.message.message_id, 
+                    reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Предыдущии урок')
 async def prev_lesson(call: types.CallbackQuery):
@@ -186,21 +195,30 @@ async def prev_lesson(call: types.CallbackQuery):
     global number
     lesson = lesson - 1
     data = siteReq(lesson, number)
-    file_obj1 = io.BytesIO(data.content)
-    try:
-        await bot.edit_message_media(
-            types.InputMediaPhoto(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
-    except PhotoDimensions:
+    if data != -1:
         file_obj1 = io.BytesIO(data.content)
-        file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(
-            types.InputMediaDocument(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
+        try: #Та же самая штука. Пробуем как фото, потом как док
+            await bot.edit_message_media(
+                types.InputMediaPhoto(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id, 
+                reply_markup=keyboard.arrows)
+        except PhotoDimensions:
+            file_obj1 = io.BytesIO(data.content)
+            file_obj1.name = f'{number}.jpg'
+            await bot.edit_message_media(
+                types.InputMediaDocument(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id,
+                reply_markup=keyboard.arrows)
+    else:
+        with open('no.png', 'rb') as file:
+            photo = types.InputMediaPhoto(file)
+            await bot.edit_message_media(
+                    media=photo,
+                    chat_id=call.message.chat.id, 
+                    message_id=call.message.message_id, 
+                    reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Следующий урок')
 async def next_lesson(call: types.CallbackQuery):
@@ -208,21 +226,30 @@ async def next_lesson(call: types.CallbackQuery):
     global number
     lesson = lesson + 1
     data = siteReq(lesson, number)
-    file_obj1 = io.BytesIO(data.content)
-    try:
-        await bot.edit_message_media(
-            types.InputMediaPhoto(file_obj1),
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
-    except PhotoDimensions:
+    if data != -1:
         file_obj1 = io.BytesIO(data.content)
-        file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(
-            types.InputMediaDocument(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
+        try: #Та же самая штука. Пробуем как фото, потом как док
+            await bot.edit_message_media(
+                types.InputMediaPhoto(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id, 
+                reply_markup=keyboard.arrows)
+        except PhotoDimensions:
+            file_obj1 = io.BytesIO(data.content)
+            file_obj1.name = f'{number}.jpg'
+            await bot.edit_message_media(
+                types.InputMediaDocument(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id,
+                reply_markup=keyboard.arrows)
+    else:
+        with open('no.png', 'rb') as file:
+            photo = types.InputMediaPhoto(file)
+            await bot.edit_message_media(
+                    media=photo,
+                    chat_id=call.message.chat.id, 
+                    message_id=call.message.message_id, 
+                    reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Следующий номер')
 async def nextNumber(call: types.CallbackQuery):
@@ -230,21 +257,30 @@ async def nextNumber(call: types.CallbackQuery):
     global number
     number = number + 1
     data = siteReq(lesson, number)
-    file_obj1 = io.BytesIO(data.content)
-    try:
-        await bot.edit_message_media(
-            types.InputMediaPhoto(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
-    except PhotoDimensions:
+    if data != -1:
         file_obj1 = io.BytesIO(data.content)
-        file_obj1.name = f'{number}.jpg'
-        await bot.edit_message_media(
-            types.InputMediaDocument(file_obj1),
-            chat_id=call.message.chat.id, 
-            message_id=call.message.message_id,
-            reply_markup=keyboard.arrows)
+        try: #Та же самая штука. Пробуем как фото, потом как док
+            await bot.edit_message_media(
+                types.InputMediaPhoto(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id, 
+                reply_markup=keyboard.arrows)
+        except PhotoDimensions:
+            file_obj1 = io.BytesIO(data.content)
+            file_obj1.name = f'{number}.jpg'
+            await bot.edit_message_media(
+                types.InputMediaDocument(file_obj1),
+                chat_id=call.message.chat.id, 
+                message_id=call.message.message_id,
+                reply_markup=keyboard.arrows)
+    else:
+        with open('no.png', 'rb') as file:
+            photo = types.InputMediaPhoto(file)
+            await bot.edit_message_media(
+                    media=photo,
+                    chat_id=call.message.chat.id, 
+                    message_id=call.message.message_id, 
+                    reply_markup=keyboard.arrows)
 
 @dp.callback_query_handler(text_contains='Удалить')
 async def delt(call: types.CallbackQuery):
