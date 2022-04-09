@@ -1,8 +1,5 @@
-# Кэш нам не надо
 __pycache__/
-# Тут секретные штуки
 config.py
-# Тут некий аналог бд
 user.txt
 .vscode/
-base.txt
+users_database.txt
