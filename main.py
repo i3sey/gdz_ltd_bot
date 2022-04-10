@@ -32,8 +32,7 @@ class Parameters:
     start = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
 
-
-def Lang(number):
+async def Lang(number):
     match Parameters.lang:
         case 'Russian':
             russianLang = [
@@ -115,23 +114,23 @@ async def caseChoose(message):
     match message.text:
         case '📝Информация' | '📝Information' | '📝Инфа':
             await bot.send_message(message.chat.id,
-                                   text=Lang(0),
+                                   text=await Lang(0),
                                    parse_mode='HTML')
         case '🧑‍🎤Создатель' | '🧑‍🎤Creator' | '🧑‍🎤Пиздатый чел':
             await bot.send_message(message.chat.id,
-                                   text=Lang(1),
+                                   text=await Lang(1),
                                    parse_mode='Markdown')
         case '👋Получить ГДЗ' | '👋Get GDZ' | '👋НА ПО ЕБАЛУ':
-            await message.answer(Lang(2))
+            await message.answer(await Lang(2))
             await getGdz.getLesson.set()
         case '🔧Настройки' | '🔧Settings' | '🔧Вопросики':
             await bot.send_message(message.chat.id,
-                                   text=Lang(13),
+                                   text=await Lang(13),
                                    parse_mode='HTML',
                                    reply_markup=langs)
         case _:
             await bot.send_message(message.chat.id,
-                                   text=Lang(3),
+                                   text=await Lang(3),
                                    parse_mode='Markdown')
 
 
@@ -153,35 +152,34 @@ class getGdz(StatesGroup):
 
 @dp.message_handler(Command('start'), state=None)
 async def welcome(message):
-    joinedFile = open("users_database.txt","r", encoding="utf8") #Чекаем, есть ли чел в бд и если нет, то добавляем
-    joinedUsers = set ()
+    # Чекаем, есть ли чел в бд и если нет, то добавляем
+    joinedFile = open("users_database.txt", "r", encoding="utf8")
+    joinedUsers = set()
     for line in joinedFile:
         joinedUsers.add(line.strip())
 
     if not str(message.chat.id) in joinedUsers:
-        joinedFile = open("users_database.txt","a", encoding="utf8")
-        joinedFile.write(str(message.chat.id)+ "\n")
+        joinedFile = open("users_database.txt", "a", encoding="utf8")
+        joinedFile.write(str(message.chat.id) + "\n")
         joinedUsers.add(message.chat.id)
-    #await bot.send_message(message.chat.id,
+    # await bot.send_message(message.chat.id,
     #                        f"Привет, *{message.from_user.first_name}!* Этот бот призван помочь тебе с заданиями по английскому.\n*Приятного использования!*",
     #                        reply_markup=Parameters.start, parse_mode='Markdown')
-        #with open('saved_dictionary.pkl', 'wb') as f:
+        # with open('saved_dictionary.pkl', 'wb') as f:
         #    pickle.dump(Parameters.d, f)
     Parameters.start = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    Parameters.info = types.KeyboardButton(Lang(9))
-    Parameters.creator = types.KeyboardButton(Lang(10))
-    Parameters.mainButton = types.KeyboardButton(Lang(11))
-    #Parameters.settings = types.KeyboardButton(Lang(12))
+    Parameters.info = types.KeyboardButton(await Lang(9))
+    Parameters.creator = types.KeyboardButton(await Lang(10))
+    Parameters.mainButton = types.KeyboardButton(await Lang(11))
+    # Parameters.settings = types.KeyboardButton(await Lang(12))
     Parameters.start.add(Parameters.mainButton)
     Parameters.start.add(
         Parameters.info, Parameters.creator, Parameters.settings)
     await bot.send_message(message.chat.id,
-                            f'*✅Обновление успешно*\n*Текущая версия:* {VERSION}',
-                            reply_markup=Parameters.start, parse_mode='Markdown')
-        #with open('saved_dictionary.pkl', 'wb') as f:
-        #    pickle.dump(Parameters.d, f)
-    
-    
+                           f'*✅Обновление успешно*\n*Текущая версия:* {VERSION}',
+                           reply_markup=Parameters.start, parse_mode='Markdown')
+    # with open('saved_dictionary.pkl', 'wb') as f:
+    #    pickle.dump(Parameters.d, f)
 
 
 @dp.message_handler(Command('stats'), state=None)
@@ -193,7 +191,7 @@ async def statistic(message):
                                parse_mode='Markdown')
     else:
         await bot.send_message(message.chat.id,
-                               text=Lang(4),
+                               text=await Lang(4),
                                parse_mode='Markdown')
 
 
@@ -202,16 +200,16 @@ async def sending(message):
     if message.chat.id == config.admin:
         await bot.send_message(message.chat.id, "*Рассылка началась \nБот оповестит когда рассылку закончит*", parse_mode='Markdown')
         receive_users, block_users = 0, 0
-        joinedFile = open ("users_database.txt", "r", encoding="utf8")
+        joinedFile = open("users_database.txt", "r", encoding="utf8")
         jionedUsers = set()
         for line in joinedFile:
             jionedUsers.add(line.strip())
         joinedFile.close()
         for user in jionedUsers:
             try:
-                await bot.send_photo(user, 
-                open('update.png', 'rb'), 
-                message.text[message.text.find(' '):])
+                await bot.send_photo(user,
+                                     open('update.png', 'rb'),
+                                     message.text[message.text.find(' '):])
                 receive_users += 1
             except BotBlocked:
                 block_users += 1
@@ -238,13 +236,13 @@ async def getLesson(message: types.Message, state: FSMContext):
         await state.finish()
         await caseChoose(message)
         # await bot.send_message(message.chat.id,
-        #                       text=Lang(5),
+        #                       text=await Lang(5),
         #                       parse_mode='Markdown')
         #Parameters.delCount += 2
 
     else:
         await state.update_data(lesson=lesson)
-        await message.answer(Lang(6))
+        await message.answer(await Lang(6))
         await getGdz.getNumber.set()
 
 
@@ -256,21 +254,21 @@ async def getNumber(message: types.Message, state: FSMContext):
         await state.finish()
         await caseChoose(message)
         # await bot.send_message(message.chat.id,
-        #                       text=Lang(5),
+        #                       text=await Lang(5),
         #                       parse_mode='Markdown')
         #Parameters.delCount += 2
     else:
         await state.update_data(number=number)
         data = await state.get_data()
         await bot.send_message(message.chat.id,
-                               text=Lang(7),
+                               text=await Lang(7),
                                parse_mode='Markdown')
         Parameters.lesson = data.get("lesson")
         Parameters.number = data.get("number")
         photo = siteReq(Parameters.lesson, Parameters.number)
         if photo == -1:
             await bot.send_message(message.chat.id,
-                                   text=Lang(8),
+                                   text=await Lang(8),
                                    parse_mode='Markdown')
         else:
             try:
