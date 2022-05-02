@@ -1,7 +1,6 @@
 import asyncio
 import io
 import logging
-import pickle
 
 import requests
 from aiogram import Bot, Dispatcher, types
@@ -37,7 +36,7 @@ async def Lang(number):
         case 'Russian':
             russianLang = [
                 "<b>📝Информация:</b>\n✍️Бот найдёт и скинет вам гдз из учебника Тер-Тинасовой за 8 класс в 2 частях\n👾Исходный код: <a href='https://github.com/i3sey/gdz_ltd_bot'>тут</a>",
-                "Бота разрабатывает @i3sey. Жду жалоб и предложений **<3.**",
+                "Жду жалоб и предложений **<3.**",
                 '✍️Введи номер урока:',
                 "Я тебя не понял, используй кнопки внизу👇",
                 'У тебя нет админки\n*Куда ты полез?*',
@@ -98,6 +97,17 @@ arrows.add(
     InlineKeyboardButton('➡️', callback_data='Следующий номер')
 )
 
+me = [
+        types.InlineKeyboardButton(text="Разработчик", url="http://t.me/i3sey_userbot?start=feedback")
+    ]
+keyboardMe = types.InlineKeyboardMarkup(row_width=1)
+keyboardMe.add(*me)
+
+donate = [
+    types.InlineKeyboardButton(text='Денюжки на оплату хоста', url='https://www.tinkoff.ru/cf/31qe4MK5EMC')
+]
+donateK = types.InlineKeyboardMarkup(row_width=1)
+donateK.add(*donate)
 
 logging.basicConfig(
     filemode='logs.log',
@@ -115,11 +125,13 @@ async def caseChoose(message):
         case '📝Информация' | '📝Information' | '📝Инфа':
             await bot.send_message(message.chat.id,
                                    text=await Lang(0),
-                                   parse_mode='HTML')
+                                   parse_mode='HTML',
+                                   reply_markup=donateK)
         case '🧑‍🎤Создатель' | '🧑‍🎤Creator' | '🧑‍🎤Пиздатый чел':
             await bot.send_message(message.chat.id,
                                    text=await Lang(1),
-                                   parse_mode='Markdown')
+                                   parse_mode='Markdown',
+                                   reply_markup=keyboardMe)
         case '👋Получить ГДЗ' | '👋Get GDZ' | '👋НА ПО ЕБАЛУ':
             await message.answer(await Lang(2))
             await getGdz.getLesson.set()
